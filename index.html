@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VALDO perivascular-space quality control</title>
+<style>body{max-width:820px;margin:24px auto;padding:0 16px;font:15px/1.5 system-ui,sans-serif;background:#0f161b;color:#e6eef2}a{color:#f0a830}h1{font-size:22px}table{border-collapse:collapse}td,th{border:1px solid #345;padding:4px 8px;text-align:left}blockquote{color:#bcd;border-left:3px solid #345;margin:8px 0;padding-left:10px}</style></head><body>
+<h1>Enlarged perivascular spaces on VALDO 2021 Task 1: quality control of our detection chain</h1>
+<p>Twelve cases of the VALDO 2021 challenge, Task 1 (T1, T2 and FLAIR; enlarged perivascular spaces annotated by two raters). Every case is predicted by a classifier that never saw it (leave-one-case-out). Research and teaching use only: not a medical device, not for clinical decisions.</p>
+<ul>
+<li><a href="slices/quality_control.html"><b>Our chain by verdict</b></a>: green = detected, yellow = false alarm, red = missed, against rater 1. Keys: left/right case, up/down slice.</li>
+<li><a href="compare/quality_control.html"><b>Chain versus its parts</b></a>: classifier-kept, DRIPS-T2, MedNet-T1 and the candidate pool as switchable outlines.</li>
+<li>Code and the step-by-step description of the chain: <a href="https://github.com/mendeltem/pvs-arena-chain">pvs-arena-chain</a> (private during the study; ask for access). The microbleed sister project: <a href="https://mendeltem.github.io/valdo-cmb-qc/">valdo-cmb-qc</a>.</li>
+</ul>
+<h2>The chain</h2>
+<table><tr><th>Step</th><th>What happens</th></tr>
+<tr><td>Detector A</td><td>DRIPS 3D U-Net on T2, posterior &ge; 0.10 (sensitive)</td></tr>
+<tr><td>Detector B</td><td>MedNet-PVS on T1, posterior &ge; 0.50 (precise)</td></tr>
+<tr><td>Candidate pool</td><td>26-connected components of A &cup; B</td></tr>
+<tr><td>Second stage</td><td>29 features per component (size, shape, membership, posteriors, z-scored intensities inside and in a 1-voxel shell, SynthSeg tissue groups); HistGradientBoosting, threshold 0.4</td></tr>
+<tr><td>Metric</td><td>component-level F1 (a predicted component counts when it touches a reference component), bootstrap over cases</td></tr></table>
+<p>Pooled over the 12 cases against rater 1: 903 detected, 335 false alarms, 878 missed (pooled F1 0.60, mean over cases 0.57). The best single detector reaches 0.44; the ceiling set by the two raters against each other is F1 0.29 on the six cases both annotated.</p>
+<h2>Data, attribution and licence</h2>
+<p>The images and reference annotations are derived from the public training data of the challenge:</p>
+<blockquote>Sudre, Carole H&eacute;l&egrave;ne; Van Wijnen, Kimberlin; Dubost, Florian; de Groot, Marius; de Bruijne, Marleen (2021). Training dataset for the VALDO 2021 challenge &ndash; Vascular Lesion Detection, Task 1. Zenodo. DOI: 10.5281/zenodo.4687995</blockquote>
+<p>Challenge paper: Sudre CH et al., "Where is VALDO? VAscular Lesions Detection and segmentatiOn challenge at MICCAI 2021", Medical Image Analysis 2024 (arXiv 2208.07167). Task 1 data come from the SABRE study and the Rotterdam Scan Study.</p>
+<p>Funding acknowledged as requested by the data providers: Wellcome Trust (082464/Z/07/Z), British Heart Foundation (SP/07/001/23603, PG/08/103, PG/12/29/29497 and CS/13/1/30327), Erasmus MC University Medical Center, the Erasmus University Rotterdam, the Netherlands Organization for Scientific Research (NWO) Grant 918-46-615, the Netherlands Organization for Health Research and Development (ZonMW), the Research Institute for Disease in the Elderly (RIDE), and the European Union Seventh Framework Programme (FP7/2007&ndash;2013) under grant agreement No. 601055, VPHDARE@IT, the Dutch Technology Foundation STW.</p>
+<p>Cohort references: Tillin T, et al. Southall And Brent REvisited: Cohort profile of SABRE. Int J Epidemiol 2012, doi:10.1093/ije/dyq175 &middot; Jones S, et al. Cohort profile update: SABRE. Int J Epidemiol 2020, doi:10.1093/ije/dyaa135 &middot; Ikram MA, et al. The Rotterdam Scan Study: design update 2016 and main findings. Eur J Epidemiol 2015, doi:10.1007/s10654-015-0105-7.</p>
+<p><b>Licence:</b> the source data are licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. The slice images, outlines and these pages are adaptations of that material and are shared under the same licence, CC BY-NC 4.0 (<a href="https://creativecommons.org/licenses/by-nc/4.0/">creativecommons.org/licenses/by-nc/4.0</a>): non-commercial use only, give credit as above. Changes made: conversion of axial T2 slices to 8-bit images with a 1&ndash;98 % window, drawing of component outlines.</p>
+<p>Detectors used as published: DRIPS (Bernal et al.) and MedNet-PVS; tissue groups from SynthSeg (Billot et al., Med Image Anal 2023).</p>
+</body></html>
